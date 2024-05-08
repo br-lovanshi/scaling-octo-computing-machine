@@ -7,7 +7,7 @@ public interface QuizService {
 
     Quiz add(Quiz quiz);
 
-    List<Quiz>  get();
+    List<Quiz> get();
 
     Quiz get(Long id);
 }
