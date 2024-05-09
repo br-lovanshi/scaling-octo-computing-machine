@@ -1,6 +1,5 @@
 package com.quize.controllers;
 
-import com.quize.QuizeServiceApplication;
 import com.quize.entities.Quiz;
 import com.quize.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +11,8 @@ import java.util.List;
 @RequestMapping("/quiz")
 public class QuizController {
 
-
+    @Autowired
     private QuizService quizService;
-
-    public QuizController(QuizService quizService) {
-        this.quizService = quizService;
-    }
 
 //    create quiz
     @PostMapping

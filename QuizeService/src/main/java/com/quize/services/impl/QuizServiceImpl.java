@@ -2,18 +2,24 @@ package com.quize.services.impl;
 
 import com.quize.entities.Quiz;
 import com.quize.repositroies.QuizRepositories;
+import com.quize.services.QuestionClient;
 import com.quize.services.QuizService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizServiceImpl implements QuizService {
 
     private QuizRepositories quizRepo;
 
-    public QuizServiceImpl(QuizRepositories quizRepositories){
-        this.quizRepo = quizRepositories;
+    private QuestionClient questionClient;
+
+    public QuizServiceImpl(QuizRepositories quizRepo, QuestionClient questionClient) {
+        this.quizRepo = quizRepo;
+        this.questionClient = questionClient;
     }
 
     @Override
@@ -23,11 +29,22 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public List<Quiz> get() {
-        return quizRepo.findAll();
+        List<Quiz> quizzes =  quizRepo.findAll();
+
+        List<Quiz> quizzessWithQuestion = quizzes.stream().map(quiz -> {
+           quiz.setQuestions(questionClient.getQustionOfQuiz(quiz.getId()));
+           return quiz;
+        }).collect(Collectors.toList());
+
+        return quizzessWithQuestion;
     }
 
     @Override
     public Quiz get(Long id) {
-        return quizRepo.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found."));
+        Quiz quiz =  quizRepo.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found."));
+
+        quiz.setQuestions(questionClient.getQustionOfQuiz(quiz.getId()));
+
+        return quiz;
     }
 }
