@@ -2,6 +2,7 @@ package com.question.controllers;
 
 import com.question.entities.Question;
 import com.question.services.QuestionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,11 +11,8 @@ import java.util.List;
 @RequestMapping("/question")
 public class QuestionController {
 
+    @Autowired
     QuestionService questionService;
-
-    public  QuestionController(QuestionService questionService){
-        this.questionService = questionService;
-    }
 
     @PostMapping
     public Question store(@RequestBody Question question){
