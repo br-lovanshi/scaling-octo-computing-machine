@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "question-service", url = "http://localhost:9090")
+@FeignClient(name = "question-service", url = "http://localhost:8081")
 public interface QuestionClient {
-
-    @GetMapping("/questions/{quizId}")
+//    http://127.0.0.1:8081/question/quiz/2
+    @GetMapping("/question/quiz/{quizId}")
     List<Question> getQustionOfQuiz(@PathVariable Long quizId);
 }
