@@ -1,23 +1,24 @@
 package com.mail.mailSender.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
 public class SendEmailInformation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ElementCollection
     private List<String> recipients;
     private String smtpServer;
     private String smtpPort;
     private String password;
     private String subject;
     private String email;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String message;
 
     public SendEmailInformation() {
@@ -33,11 +34,15 @@ public class SendEmailInformation {
         this.message = message;
     }
 
+    public Long getId(){
+        return this.id;
+    }
+
     public List<String> getRecipients() {
         return recipients;
     }
 
-    public void SetRecipients(List<String> recipients) {
+    public void setRecipients(List<String> recipients) {
         this.recipients = recipients;
     }
 

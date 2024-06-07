@@ -38,13 +38,13 @@ public class MailSenderService {
 
     public void sendEmail(List<String> recipient, String body, String subject){
 
-       try{ SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+       try{
+           SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
         simpleMailMessage.setFrom(fromEmailId);
         simpleMailMessage.setSubject(subject);
         simpleMailMessage.setBcc(recipient.toArray(new String[recipient.size()]));
         simpleMailMessage.setText(body);
-        simpleMailMessage.setSubject(subject);
 
         javaMailSender.send(simpleMailMessage);
 
@@ -61,7 +61,7 @@ public class MailSenderService {
         try{
             String fromEmail = sendEmailInformation.getEmail();
             String password = sendEmailInformation.getPassword();
-            List<String> toEmail = sendEmailInformation.getRecipients();
+                List<String> toEmail = sendEmailInformation.getRecipients();
 
             Properties props = new Properties();
             props.put("mail.smtp.host", sendEmailInformation.getSmtpServer());
