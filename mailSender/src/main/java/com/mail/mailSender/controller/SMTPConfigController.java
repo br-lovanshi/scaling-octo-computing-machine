@@ -1,6 +1,9 @@
 package com.mail.mailSender.controller;
 
+import com.mail.mailSender.dto.mailJob.SMTPConfig.GetAllSMTPConfigDTO;
 import com.mail.mailSender.model.SMTPConfig;
+import com.mail.mailSender.response.SuccessResponse;
+import com.mail.mailSender.response.SuccessResponseHandler;
 import com.mail.mailSender.service.smtp.SMTPConfigInterface;
 import com.mail.mailSender.service.smtp.SMTPConfigInterfaceImpl;
 import jakarta.validation.Valid;
@@ -15,8 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 public class SMTPConfigController {
 
@@ -24,37 +28,27 @@ public class SMTPConfigController {
     SMTPConfigInterface smtpConfigInterface = new SMTPConfigInterfaceImpl();
 
     @PostMapping("/smtp-config")
-    public ResponseEntity<?> storeSMTP(@RequestBody @Valid  SMTPConfig smtpConfig, BindingResult result){
-        if(result.hasErrors()){
-            Map<String,String> errors = new HashMap<>();
-            result.getFieldErrors().forEach(error -> errors.put(error.getField(),error.getDefaultMessage()));
-            return ResponseEntity.badRequest().body(errors);
-        }
-        try{
-        return smtpConfigInterface.storeSMTPConfig(smtpConfig);
-        }catch (Exception e){
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+    public ResponseEntity<SuccessResponse<?>> storeSMTP(@RequestBody @Valid  SMTPConfig smtpConfig) throws Exception {
+        smtpConfigInterface.storeSMTPConfig(smtpConfig);
+        SuccessResponse<?> successResponse = SuccessResponseHandler.buildSuccessResponse(HttpStatus.CREATED,"SMTP configuration stored successfully.", Optional.empty());
+        return new ResponseEntity<>(successResponse,HttpStatus.CREATED);
     }
 
     @GetMapping("/smtp-config/{id}")
-    public ResponseEntity<?> getSMTPConfigById(@PathVariable Long id){
-        try{
+    public ResponseEntity<SuccessResponse<?>> getSMTPConfigById(@PathVariable Long id) throws Exception{
+
             SMTPConfig smtpConfig = smtpConfigInterface.getSMTPConfig(id);
-            return new ResponseEntity<>(smtpConfig,HttpStatus.OK);
-        }catch(Exception e){
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+            SuccessResponse<SMTPConfig> successResponse = SuccessResponseHandler.buildSuccessResponse(HttpStatus.OK,"Data retrieved successfully.",Optional.of(smtpConfig));
+            return new ResponseEntity<>(successResponse,HttpStatus.OK);
     }
 
     @GetMapping("/smtp-config")
-    public ResponseEntity<?> getAllSMTPConfig(){
-        try{
-            List<SMTPConfig> smtpConfigList = smtpConfigInterface.getAllSMTPConfig();
-            return new ResponseEntity<>(smtpConfigList,HttpStatus.OK);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<SuccessResponse<?>> getAllSMTPConfig() throws Exception{
+
+        List<GetAllSMTPConfigDTO> smtpConfigList = smtpConfigInterface.getAllSMTPConfig();
+        SuccessResponse<?> successResponse = SuccessResponseHandler.buildSuccessResponse(HttpStatus.OK,"Data retrieved successfully.",Optional.of(smtpConfigList));
+        return new ResponseEntity<>(successResponse,HttpStatus.OK);
+
     }
 
     @DeleteMapping("/smtp-config/{id}")
@@ -66,6 +60,5 @@ public class SMTPConfigController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
-
 
 }

@@ -1,16 +1,17 @@
 package com.mail.mailSender.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.UniqueElements;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -21,16 +22,20 @@ public class SMTPConfig {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @NotEmpty
     private String appName;
-    @NotNull
+    @NotEmpty
     @Email
     private String email;
-    @NotNull
+    @NotEmpty
     private String smtpServer;
-    @NotNull
+    @NotEmpty
     private String smtpPort;
-    @NotNull
+    @NotEmpty
     private String password;
+
+    @OneToMany(mappedBy = "smtpConfig")
+    @JsonManagedReference
+    private List<MailJob> mailJobs;
 
 }

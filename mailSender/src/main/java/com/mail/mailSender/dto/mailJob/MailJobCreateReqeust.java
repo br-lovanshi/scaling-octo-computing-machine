@@ -1,7 +1,8 @@
-package com.mail.mailSender.model;
+package com.mail.mailSender.dto.mailJob;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import com.mail.mailSender.model.MailJob;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,26 +11,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
-@Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class MailJob {
+public class MailJobCreateReqeust {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Mailer ID cannot be null")
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "smtpConfig_id", referencedColumnName = "id")
-    @JsonBackReference
-    private SMTPConfig smtpConfig;
+    @NotNull
+    private Long smtpConfigId;
 
     @NotEmpty(message = "Subject cannot be empty")
     private String subject;
@@ -43,4 +37,11 @@ public class MailJob {
     @Valid
     private List<@Email(message = "Recipient email should be valid") String> recipients;
 
+    public MailJobCreateReqeust(MailJob mailJob){
+        this.setId(mailJob.getId());
+        this.setSmtpConfigId(mailJob.getSmtpConfig().getId());
+        this.setSubject(mailJob.getSubject());
+        this.setMailBody(mailJob.getMailBody());
+        this.setRecipients(mailJob.getRecipients());
+    }
 }

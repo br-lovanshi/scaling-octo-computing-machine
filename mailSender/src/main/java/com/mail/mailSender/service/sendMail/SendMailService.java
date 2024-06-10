@@ -1,7 +1,9 @@
 package com.mail.mailSender.service.sendMail;
 
-import com.mail.mailSender.Repository.MailJobRepository;
-import com.mail.mailSender.Repository.SMTPConfigRepository;
+import com.mail.mailSender.repository.MailJobRepository;
+import com.mail.mailSender.repository.SMTPConfigRepository;
+import com.mail.mailSender.exception.Conflict;
+import com.mail.mailSender.exception.NotFoundException;
 import com.mail.mailSender.model.MailJob;
 import com.mail.mailSender.model.SMTPConfig;
 import jakarta.mail.*;
@@ -27,19 +29,19 @@ public class SendMailService {
     private MailJobRepository mailJobrepository;
 
     @Async
-    public void asyncMailSender(Long id) throws Exception{
+    public void asyncMailSender(Long id) throws Conflict, NotFoundException, Exception{
 
        try {
            Optional<MailJob> mailJobOptional = mailJobrepository.findByIdWithRecipients(id);
-           if (mailJobOptional.isEmpty()) throw new Exception("Mail job not found.");
+           if (mailJobOptional.isEmpty()) throw new NotFoundException("Mail job not found.");
 
            MailJob mailJob = mailJobOptional.get();
 
            // find smtp settings
-           Optional<SMTPConfig> smtpConfigOptional = smtpConfigRepository.findById(mailJob.getMailerId());
-           if (smtpConfigOptional.isEmpty()) throw new Exception("SMTP configuration not found.");
+//           Optional<SMTPConfig> smtpConfigOptional = smtpConfigRepository.findById(mailJob.getMailerId().getId());
+//           if (smtpConfigOptional.isEmpty()) throw new NotFoundException("SMTP configuration not found.");
 
-           SMTPConfig smtpConfig = smtpConfigOptional.get();
+           SMTPConfig smtpConfig = mailJob.getSmtpConfig();
 
            Properties properties = new Properties();
            properties.put("mail.smtp.host", smtpConfig.getSmtpServer());

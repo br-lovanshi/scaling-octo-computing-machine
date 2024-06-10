@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -15,5 +16,5 @@ import java.time.LocalDateTime;
 public class SuccessResponse<T> {
     private HttpStatus statusCode;
     private String message;
-    private T data;
+    private Optional<T> data;
 }

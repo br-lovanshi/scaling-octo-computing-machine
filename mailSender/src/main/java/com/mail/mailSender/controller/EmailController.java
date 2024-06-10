@@ -1,6 +1,7 @@
 package com.mail.mailSender.controller;
 
-import com.mail.mailSender.exception.InvalidIdException;
+import com.mail.mailSender.exception.BadRequestException;
+import com.mail.mailSender.exception.NotFoundException;
 import com.mail.mailSender.model.SendEmailInformation;
 import com.mail.mailSender.response.SuccessResponse;
 import com.mail.mailSender.response.SuccessResponseHandler;
@@ -11,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -27,11 +30,12 @@ public class EmailController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SuccessResponse<String>> greet(@PathVariable int id){
-        if(id < 10) throw new InvalidIdException("Number is invalid");
+        if(id < 10) throw new NotFoundException("Number not found");
+
         SuccessResponse<String> stringSuccessResponse = SuccessResponseHandler.buildSuccessResponse(
-          "Welcome to Mail Utility.",
-                "Reqeust was successfull",
-                HttpStatus.OK
+                HttpStatus.OK,
+                "Request was successful",
+                Optional.empty()
         );
         return new ResponseEntity<>(stringSuccessResponse, HttpStatus.OK);
     }

@@ -1,14 +1,17 @@
 package com.mail.mailSender.service.MailJob;
 
-import com.mail.mailSender.exception.InvalidIdException;
+import com.mail.mailSender.dto.mailJob.GetAllJobDTO;
+import com.mail.mailSender.dto.mailJob.MailJobCreateReqeust;
+import com.mail.mailSender.exception.Conflict;
+import com.mail.mailSender.exception.NotFoundException;
 import com.mail.mailSender.model.MailJob;
 
 import java.util.List;
 
 public interface MailJobInterface {
 
-    public MailJob storeMailJob(MailJob mailJob) throws Exception;
-    public MailJob getMailJob(Long id) throws InvalidIdException;
-    public List<MailJob> getAllMailJob() throws Exception;
-    public void deleteMailJob(Long id) throws Exception;
+    public MailJob storeMailJob(MailJobCreateReqeust mailJobCreateReqeust) throws NotFoundException, Conflict, Exception;
+    public MailJob getMailJob(Long id) throws NotFoundException;
+    public List<GetAllJobDTO> getAllMailJob() throws NotFoundException;
+    public void deleteMailJob(Long id) throws NotFoundException;
 }

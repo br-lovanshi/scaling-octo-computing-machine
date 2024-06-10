@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -17,4 +18,8 @@ public class MyErrorDetails {
     private HttpStatus statusCode;
     private String message;
     private LocalDateTime timestamp;
+    private Map<String, String> errors;
+
+    public MyErrorDetails(HttpStatus badRequest, String message, LocalDateTime now) {
+    }
 }

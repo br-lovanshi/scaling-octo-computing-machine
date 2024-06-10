@@ -1,4 +1,4 @@
-package com.mail.mailSender.Repository;
+package com.mail.mailSender.repository;
 
 import com.mail.mailSender.model.SendEmailInformation;
 import org.springframework.data.jpa.repository.JpaRepository;

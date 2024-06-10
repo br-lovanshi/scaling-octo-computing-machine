@@ -1,14 +1,12 @@
 package com.mail.mailSender.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mail.mailSender.Repository.EmailInformationRepository;
+import com.mail.mailSender.repository.EmailInformationRepository;
 import com.mail.mailSender.model.SendEmailInformation;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Service
 public class MailJobInterfaceImpl implements MailJobInterface {
