@@ -17,6 +17,6 @@ public interface MailJobRepository extends JpaRepository<MailJob, Long> {
     @Query("SELECT m FROM MailJob m LEFT JOIN FETCH m.recipients WHERE m.id = :id")
     Optional<MailJob> findByIdWithRecipients(@Param("id") Long id);
 
-    @Query("SELECT NEW com.mail.mailSender.dto.mailJob.GetAllJobDTO(m.id, m.subject) FROM MailJob m")
+    @Query("SELECT NEW com.mail.mailSender.dto.mailJob.GetAllJobDTO(m.id, m.subject, m.status) FROM MailJob m")
     List<GetAllJobDTO>  getAllJobDTOs();
 }
