@@ -1,8 +1,7 @@
 package com.mail.mailSender.service.smtp;
 
-import com.mail.mailSender.dto.mailJob.SMTPConfig.GetAllSMTPConfigDTO;
+import com.mail.mailSender.dto.smtpConfig.GetAllSMTPConfigDTO;
 import com.mail.mailSender.model.SMTPConfig;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.mail.mailSender.service.smtp;
 
-import com.mail.mailSender.dto.mailJob.SMTPConfig.GetAllSMTPConfigDTO;
+import com.mail.mailSender.dto.smtpConfig.GetAllSMTPConfigDTO;
 import com.mail.mailSender.repository.SMTPConfigRepository;
 import com.mail.mailSender.exception.Conflict;
 import com.mail.mailSender.exception.NotFoundException;
