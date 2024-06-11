@@ -1,5 +1,6 @@
 package com.mail.mailSender.service.MailJob;
 
+import com.mail.mailSender.enums.StatusEnum;
 import com.mail.mailSender.repository.MailJobRepository;
 import com.mail.mailSender.repository.SMTPConfigRepository;
 import com.mail.mailSender.dto.mailJob.GetAllJobDTO;
@@ -40,19 +41,12 @@ public class MailJobService implements MailJobInterface{
         mailJob.setSubject(mailJobCreateReqeust.getSubject());
         mailJob.setMailBody(mailJobCreateReqeust.getMailBody());
         mailJob.setRecipients(mailJobCreateReqeust.getRecipients());
-
+        mailJob.setStatus(StatusEnum.PENDING);
         MailJob mailJob1 = mailJobrepository.save(mailJob);
 
-        sendMailService.asyncMailSender(mailJob1.getId());
+        //sending mail asynchronously
+        sendMailService.chunkMail(mailJob1.getId());
         return mailJob1;
-//
-//         MailJobCreateReqeust mailJobCreateReqeust1 = new MailJobCreateReqeust();
-//         mailJobCreateReqeust1.setMailBody(mailJob1.getMailBody());
-//         mailJobCreateReqeust1.setId(mailJob1.getId());
-//         mailJobCreateReqeust1.setRecipients(mailJob1.getRecipients());
-//         mailJobCreateReqeust1.setSmtpConfigId(mailJob1.getSmtpConfig().getId());
-//         mailJobCreateReqeust1.setSubject(mailJob1.getSubject());
-//         return mailJobCreateReqeust1;
     }
 
     @Override
