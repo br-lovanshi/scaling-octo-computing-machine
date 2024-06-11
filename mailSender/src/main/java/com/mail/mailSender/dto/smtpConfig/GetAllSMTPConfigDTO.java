@@ -1,5 +1,6 @@
-package com.mail.mailSender.dto.mailJob.SMTPConfig;
+package com.mail.mailSender.dto.smtpConfig;
 
+import com.mail.mailSender.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,4 @@ public class GetAllSMTPConfigDTO {
     private Long id;
     private String appName;
     private String email;
-
 }

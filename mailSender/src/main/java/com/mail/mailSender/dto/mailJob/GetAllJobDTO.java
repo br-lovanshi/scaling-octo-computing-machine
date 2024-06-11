@@ -1,5 +1,6 @@
 package com.mail.mailSender.dto.mailJob;
 
+import com.mail.mailSender.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,6 @@ public class GetAllJobDTO {
 
     private Long id;
     private String subject;
+    private StatusEnum status;
 
 }
