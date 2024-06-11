@@ -1,6 +1,7 @@
 package com.mail.mailSender.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.mail.mailSender.enums.StatusEnum;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -10,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.UniqueElements;
-
 import java.util.List;
 
 @Entity
@@ -43,4 +42,6 @@ public class MailJob {
     @Valid
     private List<@Email(message = "Recipient email should be valid") String> recipients;
 
+    private Integer sentMailCount = 0;
+    private StatusEnum status = StatusEnum.PENDING;
 }
