@@ -41,7 +41,8 @@ public class MailJob {
     @NotEmpty(message = "Recipients list cannot be empty")
     @Valid
     private List<@Email(message = "Recipient email should be valid") String> recipients;
-
+    private String image;
+    private String imagePublicId;
     private Integer sentMailCount = 0;
     private StatusEnum status = StatusEnum.PENDING;
 }

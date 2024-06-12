@@ -1,4 +1,4 @@
-package com.mail.mailSender.service.MailJob;
+package com.mail.mailSender.service.mailJob;
 
 import com.mail.mailSender.enums.StatusEnum;
 import com.mail.mailSender.repository.MailJobRepository;
@@ -9,13 +9,14 @@ import com.mail.mailSender.exception.Conflict;
 import com.mail.mailSender.exception.NotFoundException;
 import com.mail.mailSender.model.MailJob;
 import com.mail.mailSender.model.SMTPConfig;
+import com.mail.mailSender.service.fileUpload.UploadFilesInterface;
 import com.mail.mailSender.service.sendMail.SendMailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MailJobService implements MailJobInterface{
@@ -26,7 +27,8 @@ public class MailJobService implements MailJobInterface{
     private SMTPConfigRepository smtpConfigRepository;
     @Autowired
     private SendMailService sendMailService;
-
+    @Autowired
+    private UploadFilesInterface fileService;
     @Override
     public MailJob storeMailJob(MailJobCreateReqeust mailJobCreateReqeust) throws Conflict, NotFoundException, Exception {
 
@@ -42,6 +44,14 @@ public class MailJobService implements MailJobInterface{
         mailJob.setMailBody(mailJobCreateReqeust.getMailBody());
         mailJob.setRecipients(mailJobCreateReqeust.getRecipients());
         mailJob.setStatus(StatusEnum.PENDING);
+
+        //storing image
+        if(mailJobCreateReqeust.getFile() != null){
+            Map cloudinaryFile = fileService.upload(mailJobCreateReqeust.getFile(),"utilityMailBodyImages");
+            mailJob.setImage((String)cloudinaryFile.get("secure_url"));
+            mailJob.setImagePublicId((String) cloudinaryFile.get("public_id"));
+        }
+
         MailJob mailJob1 = mailJobrepository.save(mailJob);
 
         //sending mail asynchronously

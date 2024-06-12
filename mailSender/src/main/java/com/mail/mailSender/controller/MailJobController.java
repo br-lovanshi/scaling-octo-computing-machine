@@ -6,7 +6,7 @@ import com.mail.mailSender.dto.mailJob.MailJobResponseDTO;
 import com.mail.mailSender.model.MailJob;
 import com.mail.mailSender.response.SuccessResponse;
 import com.mail.mailSender.response.SuccessResponseHandler;
-import com.mail.mailSender.service.MailJob.MailJobInterface;
+import com.mail.mailSender.service.mailJob.MailJobInterface;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

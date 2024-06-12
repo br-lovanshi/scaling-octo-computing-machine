@@ -24,6 +24,7 @@ public class MailJobResponseDTO {
     private Integer sentMail;
     private Integer pendingMail;
     private List<String> recipients;
+    private String image;
 
     public MailJobResponseDTO(MailJob mailJob){
         this.setId(mailJob.getId());
@@ -35,6 +36,7 @@ public class MailJobResponseDTO {
         this.setSentMail(mailJob.getSentMailCount());
         this.setAllMails(mailJob.getRecipients().size());
         this.setPendingMail(this.getAllMails()-this.getSentMail());
+        this.setImage(mailJob.getImage());
     }
 
 }

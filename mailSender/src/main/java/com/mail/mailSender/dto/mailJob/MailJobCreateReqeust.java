@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,8 +21,6 @@ import java.util.List;
 @Getter
 @Setter
 public class MailJobCreateReqeust {
-
-    private Long id;
 
     @NotNull
     private Long smtpConfigId;
@@ -38,8 +37,10 @@ public class MailJobCreateReqeust {
     @Valid
     private List<@Email(message = "Recipient email should be valid") String> recipients;
     private StatusEnum status;
+
+    private MultipartFile file;
+
     public MailJobCreateReqeust(MailJob mailJob){
-        this.setId(mailJob.getId());
         this.setSmtpConfigId(mailJob.getSmtpConfig().getId());
         this.setSubject(mailJob.getSubject());
         this.setMailBody(mailJob.getMailBody());
