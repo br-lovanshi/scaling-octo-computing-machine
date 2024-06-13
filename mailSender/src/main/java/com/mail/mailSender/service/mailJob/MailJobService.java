@@ -46,8 +46,8 @@ public class MailJobService implements MailJobInterface{
         mailJob.setStatus(StatusEnum.PENDING);
 
         //storing image
-        if(mailJobCreateReqeust.getFile() != null){
-            Map cloudinaryFile = fileService.upload(mailJobCreateReqeust.getFile(),"utilityMailBodyImages");
+        if(mailJobCreateReqeust.getImage() != null){
+            Map cloudinaryFile = fileService.upload(mailJobCreateReqeust.getImage(),"utilityMailBodyImages");
             mailJob.setImage((String)cloudinaryFile.get("secure_url"));
             mailJob.setImagePublicId((String) cloudinaryFile.get("public_id"));
         }

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -40,7 +41,7 @@ public class MailJob {
     @ElementCollection
     @NotEmpty(message = "Recipients list cannot be empty")
     @Valid
-    private List<@Email(message = "Recipient email should be valid") String> recipients;
+    private Set<@Email(message = "Recipient email should be valid") String> recipients;
     private String image;
     private String imagePublicId;
     private Integer sentMailCount = 0;

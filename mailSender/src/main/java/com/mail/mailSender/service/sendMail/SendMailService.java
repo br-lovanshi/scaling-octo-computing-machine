@@ -25,6 +25,7 @@ import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -106,7 +107,7 @@ public class SendMailService {
 
             MailJob mailJob = mailJobOptional.get();
             SMTPConfig smtpConfig = mailJobOptional.get().getSmtpConfig();
-            List<String> recipients = mailJob.getRecipients();
+            List<String> recipients = mailJob.getRecipients().stream().toList();
 
             Properties properties = new Properties();
             properties.put("mail.smtp.host", smtpConfig.getSmtpServer());

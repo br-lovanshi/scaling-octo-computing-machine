@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class MailJobResponseDTO {
     private Integer allMails;
     private Integer sentMail;
     private Integer pendingMail;
-    private List<String> recipients;
+    private Set<String> recipients;
     private String image;
 
     public MailJobResponseDTO(MailJob mailJob){

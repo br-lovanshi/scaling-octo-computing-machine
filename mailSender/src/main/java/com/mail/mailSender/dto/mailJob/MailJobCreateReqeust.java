@@ -15,6 +15,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,16 +36,8 @@ public class MailJobCreateReqeust {
     @ElementCollection
     @NotEmpty(message = "Recipients list cannot be empty")
     @Valid
-    private List<@Email(message = "Recipient email should be valid") String> recipients;
+    private Set<@Email(message = "Recipient email should be valid") String> recipients;
     private StatusEnum status;
 
-    private MultipartFile file;
-
-    public MailJobCreateReqeust(MailJob mailJob){
-        this.setSmtpConfigId(mailJob.getSmtpConfig().getId());
-        this.setSubject(mailJob.getSubject());
-        this.setMailBody(mailJob.getMailBody());
-        this.setRecipients(mailJob.getRecipients());
-        this.setStatus(mailJob.getStatus());
-    }
+    private MultipartFile image;
 }

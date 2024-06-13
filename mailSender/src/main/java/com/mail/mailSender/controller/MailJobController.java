@@ -3,6 +3,7 @@ package com.mail.mailSender.controller;
 import com.mail.mailSender.dto.mailJob.GetAllJobDTO;
 import com.mail.mailSender.dto.mailJob.MailJobCreateReqeust;
 import com.mail.mailSender.dto.mailJob.MailJobResponseDTO;
+import com.mail.mailSender.enums.StatusEnum;
 import com.mail.mailSender.model.MailJob;
 import com.mail.mailSender.response.SuccessResponse;
 import com.mail.mailSender.response.SuccessResponseHandler;
@@ -14,9 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/mail-job")
@@ -28,10 +32,21 @@ public class MailJobController {
     private static final Logger logger = LoggerFactory.getLogger(MailJobController.class);
 
     @PostMapping()
-    public ResponseEntity<SuccessResponse<?>> addMailJob(@RequestBody @Valid MailJobCreateReqeust mailJobCreateReqeust) throws Exception {
+    public ResponseEntity<SuccessResponse<?>> addMailJob(
+            @RequestParam("smtpConfigId") Long smtpConfigId,
+            @RequestParam("subject") String subject,
+            @RequestParam("mailbody") String mailbody,
+            @RequestParam("recipients[]") List<String> recipients,
+            @RequestParam("image")MultipartFile image) throws Exception {
 
+        MailJobCreateReqeust requestDTO = new MailJobCreateReqeust();
+        requestDTO.setSmtpConfigId(smtpConfigId);
+        requestDTO.setSubject(subject);
+        requestDTO.setMailBody(mailbody);
+        requestDTO.setRecipients(recipients.stream().collect(Collectors.toSet()));
+        requestDTO.setImage(image);
 
-        MailJob mailJob = mailJobInterface.storeMailJob(mailJobCreateReqeust);
+        MailJob mailJob = mailJobInterface.storeMailJob(requestDTO);
 
         MailJobResponseDTO mailJobResponseDTO = new MailJobResponseDTO(mailJob);
 
