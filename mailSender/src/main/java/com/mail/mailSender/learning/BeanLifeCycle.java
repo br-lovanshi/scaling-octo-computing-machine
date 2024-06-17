@@ -1,13 +1,16 @@
-package com.mail.mailSender.Learning;
-
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import org.springframework.stereotype.Component;
+package com.mail.mailSender.learning;
 
 //@Component
 public class BeanLifeCycle {
+    public Calculator calculator;
 
+//    public BeanLifeCycle(Calculator calculator){
+//        this.calculator = calculator;
+//    }
 
+    public void setCalculator(Calculator calculator){
+        this.calculator = calculator;
+    }
     public BeanLifeCycle(){
         System.out.println("Bean created");
     }

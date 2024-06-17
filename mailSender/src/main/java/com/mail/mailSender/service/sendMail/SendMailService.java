@@ -1,5 +1,6 @@
 package com.mail.mailSender.service.sendMail;
 
+import com.cloudinary.Url;
 import com.mail.mailSender.enums.StatusEnum;
 import com.mail.mailSender.repository.MailJobRepository;
 import com.mail.mailSender.repository.SMTPConfigRepository;
@@ -7,11 +8,15 @@ import com.mail.mailSender.exception.Conflict;
 import com.mail.mailSender.exception.NotFoundException;
 import com.mail.mailSender.model.MailJob;
 import com.mail.mailSender.model.SMTPConfig;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
 import lombok.extern.flogger.Flogger;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -22,6 +27,13 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.Option;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -129,7 +141,7 @@ public class SendMailService {
                 int endIndex = Math.min(i + CHUNK_SIZE, recipients.size());
                 List<String> batchRecipients = recipients.subList(i, endIndex);
                 sentMailCount += batchRecipients.size();
-                sendEmail(session, smtpConfig.getEmail(), mailJob.getSubject(), batchRecipients, mailJob.getMailBody());
+                sendEmail(session, smtpConfig.getEmail(), mailJob.getSubject(), batchRecipients, mailJob.getMailBody(), mailJob.getAttachment(), mailJob.getImage());
 
                 mailJob.setSentMailCount(sentMailCount);
                 mailJobrepository.save(mailJob);
@@ -159,12 +171,13 @@ public class SendMailService {
 
     }
 
-    private void sendEmail(Session session, String fromEmail, String subject, List<String> recipients, String body) throws MessagingException{
+    private void sendEmail(Session session, String fromEmail, String subject, List<String> recipients, String body, String attachmentUrl, String inlineImageUrl) throws MessagingException{
 
         try{
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(fromEmail));
             msg.setSubject(subject);
+
 
             InternetAddress[] bccAddresses = new InternetAddress[recipients.size()];
 
@@ -173,13 +186,46 @@ public class SendMailService {
             }
 
             msg.setRecipients(Message.RecipientType.BCC, bccAddresses);
+            Multipart multipart = new MimeMultipart();
 
             // Email body
-            BodyPart bodyPart = new MimeBodyPart();
-            bodyPart.setContent(body, "text/html; charset=UTF-8");
-
-            Multipart multipart = new MimeMultipart();
+//            BodyPart bodyPart = new MimeBodyPart();
+//            bodyPart.setContent(body, "text/html; charset=UTF-8");
+//            multipart.addBodyPart(bodyPart);
+            MimeBodyPart bodyPart = new MimeBodyPart();
+            String cid = "image_cid";
+            String htmlText = body + "<br><img src='cid:" + cid + "' style='width:400px;'>";
+            bodyPart.setContent(htmlText, "text/html; charset=UTF-8");
             multipart.addBodyPart(bodyPart);
+
+            // Inline image part
+            if (inlineImageUrl != null && !inlineImageUrl.isEmpty()) {
+                URL imageUrl = new URL(inlineImageUrl);
+                InputStream imageStream = imageUrl.openStream();
+                String imageFileName = getFileNameFromUrl(inlineImageUrl);
+                String imageMimeType = URLConnection.guessContentTypeFromName(imageFileName);
+
+                DataSource imageDataSource = new ByteArrayDataSource(imageStream, imageMimeType != null ? imageMimeType : "application/octet-stream");
+                MimeBodyPart imagePart = new MimeBodyPart();
+                imagePart.setDataHandler(new DataHandler(imageDataSource));
+                imagePart.setHeader("Content-ID", "<" + cid + ">");
+                imagePart.setFileName(imageFileName);
+                imagePart.setDisposition(MimeBodyPart.INLINE);
+                multipart.addBodyPart(imagePart);
+            }
+            // Attachment
+            if (attachmentUrl != null && !attachmentUrl.isEmpty()) {
+                URL url = new URL(attachmentUrl);
+                InputStream inputStream = url.openStream();
+                String fileName = getFileNameFromUrl(attachmentUrl);
+                String mimeType = URLConnection.guessContentTypeFromName(fileName);
+
+                DataSource dataSource = new ByteArrayDataSource(inputStream, mimeType != null ? mimeType : "application/octet-stream");
+                MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+                attachmentBodyPart.setDataHandler(new DataHandler(dataSource));
+                attachmentBodyPart.setFileName(fileName);
+                multipart.addBodyPart(attachmentBodyPart);
+            }
 
             msg.setContent(multipart);
 
@@ -191,5 +237,9 @@ public class SendMailService {
             throw new MessagingException("Failed to send email: " + e.getMessage());
         }
     }
-
+    // Method to extract filename from URL
+    private String getFileNameFromUrl(String url) {
+        String[] parts = url.split("/");
+        return parts[parts.length - 1];
+    }
 }

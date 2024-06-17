@@ -2,6 +2,7 @@ package com.mail.mailSender.dto.mailJob;
 
 import com.mail.mailSender.enums.StatusEnum;
 import com.mail.mailSender.model.MailJob;
+import com.mail.mailSender.validation.imageValidation.ValidImage;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.validation.Valid;
@@ -39,5 +40,7 @@ public class MailJobCreateReqeust {
     private Set<@Email(message = "Recipient email should be valid") String> recipients;
     private StatusEnum status;
 
+    @ValidImage
     private MultipartFile image;
+    private MultipartFile attachment;
 }

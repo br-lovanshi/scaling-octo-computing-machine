@@ -4,6 +4,7 @@ import com.mail.mailSender.dto.mailJob.GetAllJobDTO;
 import com.mail.mailSender.dto.mailJob.MailJobCreateReqeust;
 import com.mail.mailSender.dto.mailJob.MailJobResponseDTO;
 import com.mail.mailSender.enums.StatusEnum;
+import com.mail.mailSender.exception.BadRequestException;
 import com.mail.mailSender.model.MailJob;
 import com.mail.mailSender.response.SuccessResponse;
 import com.mail.mailSender.response.SuccessResponseHandler;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +30,7 @@ public class MailJobController {
 
     @Autowired
     private MailJobInterface mailJobInterface;
+    private static final String[] ALLOWED_TYPES = { "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml" };
 
     private static final Logger logger = LoggerFactory.getLogger(MailJobController.class);
 
@@ -37,14 +40,34 @@ public class MailJobController {
             @RequestParam("subject") String subject,
             @RequestParam("mailbody") String mailbody,
             @RequestParam("recipients[]") List<String> recipients,
-            @RequestParam("image")MultipartFile image) throws Exception {
+            @RequestParam(value = "image", required = false)MultipartFile image,
+            @RequestParam(value = "attachment", required = false) MultipartFile attachment
+            ) throws Exception {
+
+        boolean isValid = false;
+        if(image != null && !image.isEmpty()){
+            for (String allowedType : ALLOWED_TYPES) {
+                if (allowedType.equals(image.getContentType())) {
+                    isValid = true;
+                }
+            }
+            if(!isValid)
+                throw new BadRequestException("Invalid image file. Only JPEG, PNG, WEBP, GIF, and SVG are allowed.");
+        }
+
 
         MailJobCreateReqeust requestDTO = new MailJobCreateReqeust();
         requestDTO.setSmtpConfigId(smtpConfigId);
         requestDTO.setSubject(subject);
         requestDTO.setMailBody(mailbody);
-        requestDTO.setRecipients(recipients.stream().collect(Collectors.toSet()));
-        requestDTO.setImage(image);
+        requestDTO.setRecipients(new HashSet<>(recipients));
+        if (image != null && !image.isEmpty()) {
+            requestDTO.setImage(image);
+        }
+
+        if (attachment != null && !attachment.isEmpty()) {
+            requestDTO.setAttachment(attachment);
+        }
 
         MailJob mailJob = mailJobInterface.storeMailJob(requestDTO);
 

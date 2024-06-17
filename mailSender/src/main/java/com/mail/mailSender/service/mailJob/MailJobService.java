@@ -46,10 +46,17 @@ public class MailJobService implements MailJobInterface{
         mailJob.setStatus(StatusEnum.PENDING);
 
         //storing image
-        if(mailJobCreateReqeust.getImage() != null){
+        if(mailJobCreateReqeust.getImage() != null && !mailJobCreateReqeust.getImage().isEmpty()){
             Map cloudinaryFile = fileService.upload(mailJobCreateReqeust.getImage(),"utilityMailBodyImages");
             mailJob.setImage((String)cloudinaryFile.get("secure_url"));
             mailJob.setImagePublicId((String) cloudinaryFile.get("public_id"));
+        }
+
+        //store files
+        if(mailJobCreateReqeust.getAttachment() != null && !mailJobCreateReqeust.getAttachment().isEmpty()){
+            Map attachment = fileService.upload(mailJobCreateReqeust.getAttachment(),"utilityMailAttachments");
+            mailJob.setAttachment((String)attachment.get("secure_url"));
+            mailJob.setAttachmentPublicId((String) attachment.get("public_id"));
         }
 
         MailJob mailJob1 = mailJobrepository.save(mailJob);
@@ -84,6 +91,14 @@ public class MailJobService implements MailJobInterface{
         Optional<MailJob> mailJobOptional = mailJobrepository.findById(id);
         if(mailJobOptional.isEmpty()){
             throw new NotFoundException("Mail job not found.");
+        }
+
+        if(mailJobOptional.get().getImagePublicId() != null){
+            fileService.deleteFile(mailJobOptional.get().getImagePublicId());
+        }
+
+        if(mailJobOptional.get().getAttachmentPublicId() != null){
+            fileService.deleteFile(mailJobOptional.get().getAttachmentPublicId());
         }
         mailJobrepository.deleteById(id);
     }

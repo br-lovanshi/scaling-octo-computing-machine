@@ -21,6 +21,11 @@ public class UploadFileController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
+    @GetMapping("/resource")
+    public ResponseEntity<String> getFileResource(@RequestParam("publicId") String publicId) throws Exception {
+        String data = uploadFileService.getResourceType(publicId);
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
     @PutMapping("/update")
     public ResponseEntity<Map> updateFile(@RequestParam("image") MultipartFile file, String publicId) throws Exception{
         Map data = uploadFileService.updateFile(file, publicId);
