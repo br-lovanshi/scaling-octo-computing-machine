@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +24,11 @@ public class MailJobResponseDTO {
     private Integer allMails;
     private Integer sentMail;
     private Integer pendingMail;
-    private List<String> recipients;
+    private Set<String> recipients;
+    private String image;
+    private String imagePublicId;
+    private String attachment;
+    private String attachmentPublicId;
 
     public MailJobResponseDTO(MailJob mailJob){
         this.setId(mailJob.getId());
@@ -35,6 +40,10 @@ public class MailJobResponseDTO {
         this.setSentMail(mailJob.getSentMailCount());
         this.setAllMails(mailJob.getRecipients().size());
         this.setPendingMail(this.getAllMails()-this.getSentMail());
+        this.setImage(mailJob.getImage());
+        this.setImagePublicId(mailJob.getImagePublicId());
+        this.setAttachment(mailJob.getAttachment());
+        this.setAttachmentPublicId(mailJob.getAttachmentPublicId());
     }
 
 }

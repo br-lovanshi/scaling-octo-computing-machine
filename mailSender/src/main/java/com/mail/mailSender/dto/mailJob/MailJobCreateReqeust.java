@@ -2,6 +2,7 @@ package com.mail.mailSender.dto.mailJob;
 
 import com.mail.mailSender.enums.StatusEnum;
 import com.mail.mailSender.model.MailJob;
+import com.mail.mailSender.validation.imageValidation.ValidImage;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.validation.Valid;
@@ -12,16 +13,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class MailJobCreateReqeust {
-
-    private Long id;
 
     @NotNull
     private Long smtpConfigId;
@@ -36,14 +37,10 @@ public class MailJobCreateReqeust {
     @ElementCollection
     @NotEmpty(message = "Recipients list cannot be empty")
     @Valid
-    private List<@Email(message = "Recipient email should be valid") String> recipients;
+    private Set<@Email(message = "Recipient email should be valid") String> recipients;
     private StatusEnum status;
-    public MailJobCreateReqeust(MailJob mailJob){
-        this.setId(mailJob.getId());
-        this.setSmtpConfigId(mailJob.getSmtpConfig().getId());
-        this.setSubject(mailJob.getSubject());
-        this.setMailBody(mailJob.getMailBody());
-        this.setRecipients(mailJob.getRecipients());
-        this.setStatus(mailJob.getStatus());
-    }
+
+    @ValidImage
+    private MultipartFile image;
+    private MultipartFile attachment;
 }

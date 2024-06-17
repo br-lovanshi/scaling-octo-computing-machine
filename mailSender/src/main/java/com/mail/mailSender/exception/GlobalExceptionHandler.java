@@ -21,7 +21,6 @@ public class GlobalExceptionHandler {
         MyErrorDetails myErrorDetails = new MyErrorDetails();
         myErrorDetails.setStatusCode(status);
         myErrorDetails.setMessage(ex.getMessage());
-        myErrorDetails.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<>(myErrorDetails,status);
     }
 
@@ -58,6 +57,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MyErrorDetails> myExceptionHandler(Exception e, WebRequest req) throws Exception{
+        e.printStackTrace();
         return this.buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e);
     }
 

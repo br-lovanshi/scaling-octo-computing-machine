@@ -1,4 +1,4 @@
-package com.mail.mailSender.service.MailJob;
+package com.mail.mailSender.service.mailJob;
 
 import com.mail.mailSender.dto.mailJob.GetAllJobDTO;
 import com.mail.mailSender.dto.mailJob.MailJobCreateReqeust;
